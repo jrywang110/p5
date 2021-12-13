@@ -21,6 +21,22 @@ public class DeboardEvent implements Event {
     return List.of(p.toString(), t.toString(), s.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    throw new UnsupportedOperationException();
+    if (mbta.lines.containsKey(t.toString())) {
+      if (mbta.lines.get(t.toString()).containsValue(s)) {
+        if (mbta.train_position.get(t.toString()) == s && t.containsPassenger(p)) {
+          if (mbta.journeys.get(t.toString())[p.get_index() + 1] == s) {
+            t.removePassenger(p);
+          } else {
+            throw new RuntimeException();
+          }
+        } else {
+          throw new RuntimeException();
+        }
+      } else {
+        throw new RuntimeException();
+      }
+    } else {
+      throw new RuntimeException();
+    }
   }
 }
