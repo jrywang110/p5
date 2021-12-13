@@ -22,9 +22,18 @@ public class MoveEvent implements Event {
   }
   public void replayAndCheck(MBTA mbta) {
     if (mbta.lines.containsKey(t.toString())) {
-      if (mbta.lines.containsValue(s1) && mbta.lines.containsValue(s2)) {
-        
+      if (mbta.lines.get(t.toString()).containsValue(s1) && mbta.lines.get(t.toString()).containsValue(s2)) {
+        for (String station_name : mbta.train_position.keySet()) {
+          if (mbta.train_position.get(station_name) == s2) {
+            throw new RuntimeException();
+          }
+        }
+        mbta.train_position.replace(t.toString(), s2);
+      } else {
+        throw new RuntimeException();
       }
+    } else {
+      throw new RuntimeException();
     }
   }
 }
