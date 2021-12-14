@@ -12,7 +12,25 @@ public class Sim {
           while (!mbta.simOver()) {
             try { 
               Thread.sleep(500);
-              moveTrainHelper(trainName, mbta, log);
+              Train t = Train.make(trainName);
+              Station startStation = mbta.train_position.get(trainName);
+              List<Station> stationList = mbta.lines.get(trainName);
+              int maxIndex = stationList.size() - 1;
+              int startIndex = stationList.indexOf(startStation);
+
+              if ((startIndex == maxIndex && t.isRight()) || (startIndex == 0 && !t.isRight())) {
+                    t.changeDir();
+              }
+
+              if (t.isRight()) {
+                Event e = new MoveEvent(t, startStation, stationList.get(startIndex + 1));
+                e.replayAndCheck(mbta);
+                log.train_moves(t, startStation, stationList.get(startIndex + 1));
+              } else {
+                Event e = new MoveEvent(t, startStation, stationList.get(startIndex - 1));
+                e.replayAndCheck(mbta);
+                log.train_moves(t, startStation, stationList.get(startIndex - 1));
+              }
             } catch (InterruptedException e){}
           }
         }
