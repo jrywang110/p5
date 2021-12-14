@@ -43,7 +43,7 @@ public class MoveEvent implements Event {
       mbta.train_position.replace(t.toString(), null);
 
       while (startIndex != endIndex) {
-        if (startIndex == maxIndex || startIndex == 0) {
+        if ((startIndex == maxIndex && t.isRight()) || (startIndex == 0 && !t.isRight()) {
           t.changeDir();
         }
 
