@@ -32,6 +32,6 @@ public class Passenger extends Entity {
 
   public void updateJourney(Map<String, List<Station>> journey) {
     index += 1;
-    curr_station = journey.get(toString()).get(index);
+    curr_station = journey.get(this.toString()).get(index);
   }
 }
