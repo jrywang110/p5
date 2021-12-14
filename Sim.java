@@ -11,9 +11,9 @@ public class Sim {
         public void run() {
           while (!mbta.simOver()) {
             try { 
-              sleep(500);
+              Thread.sleep(500);
+              moveTrainHelper(trainName, mbta, log);
             } catch (InterruptedException e){}
-            moveTrainHelper(trainName, mbta, log);
           }
         }
       };
