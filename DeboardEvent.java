@@ -24,7 +24,7 @@ public class DeboardEvent implements Event {
     if (mbta.lines.containsKey(t.toString())) {
       if (mbta.lines.get(t.toString()).contains(s)) {
         if (mbta.train_position.get(t.toString()) == s && t.containsPassenger(p)) {
-          if (mbta.journeys.get(t.toString()).get(p.get_index() + 1) == s) {
+          if (mbta.journeys.get(p.toString()).get(p.get_index() + 1) == s) {
             t.removePassenger(p);
             p.updateJourney(mbta.journeys);
           } else {
