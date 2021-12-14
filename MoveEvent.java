@@ -53,7 +53,7 @@ public class MoveEvent implements Event {
         }
 
         if (t.isRight()) {
-          System.out.println("i wonder if this shows up in the autograder")
+          System.out.println("i wonder if this shows up in the autograder");
           startIndex += 1;
           for (String trainName : mbta.train_position.keySet()) {
             if (mbta.train_position.get(trainName) == stationList.get(startIndex)) {
