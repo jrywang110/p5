@@ -19,19 +19,18 @@ public class Passenger extends Entity {
   }
 
   public Station get_station() {
-    return this.curr_station;
+    return curr_station;
   }
 
   public void update_station(Station station) {
-    this.curr_station = station;
+    curr_station = station;
   }
 
   public int get_index() {
     return index;
   }
 
-  public void updateJourney(Map<String, List<Station>> journey) {
+  public void updateIndex() {
     index += 1;
-    curr_station = journey.get(this.toString()).get(index);
   }
 }
