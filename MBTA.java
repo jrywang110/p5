@@ -22,7 +22,7 @@ public class MBTA {
       } 
       lines.put(name, station_list);
       Train.make(name);
-      train_position.put(name, station_list[0]);
+      train_position.put(name, station_list.get(0));
     }
   }
 
@@ -34,7 +34,7 @@ public class MBTA {
         station_list.add(Station.make(station));
       } 
       journeys.put(name, station_list);
-      Passenger.make(name).update_station(station_list[0]);
+      Passenger.make(name).update_station(station_list.get(0));
     }
   }
 
@@ -42,13 +42,13 @@ public class MBTA {
   // raises an exception
   public void checkStart() {
     for (String train : train_position.keySet()) {
-      if (train_position.get(train) != lines.get(train)[0]) {
+      if (train_position.get(train) != lines.get(train).get(0)) {
         throw new RuntimeException();
       }
     }
 
     for (String p : journeys.keySet()) {
-      if (Passenger.make(p).get_station() != journeys.get(p)[0]) {
+      if (Passenger.make(p).get_station() != journeys.get(p).get(0)) {
         throw new RuntimeException();
       }
     }
@@ -58,7 +58,7 @@ public class MBTA {
   // raises an exception
   public void checkEnd() {
     for (String p : journeys.keySet()) {
-      if (Passenger.make(p).get_station() != journeys.get(p)[journeys.get(p).size() - 1]) {
+      if (Passenger.make(p).get_station() != journeys.get(p).get(journeys.get(p).size() - 1)) {
         throw new RuntimeException();
       }
     }
@@ -74,8 +74,9 @@ public class MBTA {
   public void loadConfig(String filename) {
     try {
       Gson gson = new Gson();
+      File f = new File(filename);
 
-      Reader reader = Files.newBufferedReader(Paths.get(filename));
+      Reader reader = Files.newBufferedReader(f.toPath());
 
       MbtaJSON json = gson.fromJson(reader, MbtaJSON.class);
 

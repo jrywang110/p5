@@ -7,6 +7,8 @@ public class Train extends Entity {
 
   private List<Passenger> passengers = new ArrayList<Passenger>();
 
+  private boolean right = true;
+
   public static Train make(String name) {
     // Change this method!
     if (cache.containsKey(name)) {
@@ -29,4 +31,17 @@ public class Train extends Entity {
   public void removePassenger(Passenger p) {
     passengers.remove(p);
   }
+
+  public boolean isRight() {
+    return right;
+  }
+
+  public void changeDir() {
+    if (right) {
+      right = false;
+    } else {
+      right = true;
+    }
+  }
+
 }
