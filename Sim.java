@@ -13,9 +13,7 @@ public class Sim {
             try { 
               sleep(500);
             } catch (InterruptedException e){}
-            synchronized (this) {
-              moveTrainHelper(trainName, mbta, log);
-            }
+            moveTrainHelper(trainName, mbta, log);
           }
         }
       };
