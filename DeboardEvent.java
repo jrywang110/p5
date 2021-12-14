@@ -28,7 +28,6 @@ public class DeboardEvent implements Event {
           if (mbta.journeys.get(p.toString()).get(nextIndex) == s) {
             t.removePassenger(p);
             p.update_station(s);
-            p.deBoard();
           } else {
             throw new RuntimeException();
           }

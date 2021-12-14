@@ -29,7 +29,7 @@ public class Sim {
             try { 
               synchronized (this) {
                 for (String trainName : mbta.train_position.keySet()) {
-                  if (mbta.train_position.get(trainName) == Passenger.make(pName).get_station() && !Passenger.make(pName).isBoarded()) {
+                  if (mbta.train_position.get(trainName) == Passenger.make(pName).get_station()) {
                     Event e = new BoardEvent(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
                     e.replayAndCheck(mbta);
                     log.passenger_boards(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
@@ -37,7 +37,7 @@ public class Sim {
                   int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
                   int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
                   if (journeyIndex < maxJourneyIndex) {
-                    if (mbta.train_position.get(trainName) == mbta.journeys.get(p.toString()).get(journeyIndex + 1) && Passenger.make(pName).isBoarded()) {
+                    if (mbta.train_position.get(trainName) == mbta.journeys.get(p.toString()).get(journeyIndex + 1)) {
                       Event e = new DeboardEvent(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
                       e.replayAndCheck(mbta);
                       log.passenger_deboards(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
