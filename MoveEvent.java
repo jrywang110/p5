@@ -1,4 +1,5 @@
 import java.util.*;
+import java.lang.Math.*;
 
 public class MoveEvent implements Event {
   public final Train t; public final Station s1, s2;
@@ -36,7 +37,7 @@ public class MoveEvent implements Event {
       int endIndex = stationList.indexOf(s2);
       int maxIndex = stationList.size() - 1; 
 
-      if (abs(startIndex - endIndex) != 1) {
+      if (Math.abs(startIndex - endIndex) != 1) {
         throw new RuntimeException();
       }
       if (mbta.train_position.get(t.toString()) != s1) {
