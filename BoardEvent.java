@@ -22,16 +22,17 @@ public class BoardEvent implements Event {
   }
   public void replayAndCheck(MBTA mbta) {
     if (mbta.lines.containsKey(t.toString())) {
-      if (mbta.lines.get(t.toString()).containsValue(s)) {
+      if (mbta.lines.get(t.toString()).contains(s)) {
         if (mbta.train_position.get(t.toString()) == s && p.get_station() == s) {
           t.addPassenger(p);
         } else {
-          throw new RuntimeException()
+          throw new RuntimeException();
         }
+      } else {
+        throw new RuntimeException();
+      }
     } else {
       throw new RuntimeException();
     }
-  } else {
-    throw new RuntimeException();
   }
 }

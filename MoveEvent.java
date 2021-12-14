@@ -21,19 +21,52 @@ public class MoveEvent implements Event {
     return List.of(t.toString(), s1.toString(), s2.toString());
   }
   public void replayAndCheck(MBTA mbta) {
-    if (mbta.lines.containsKey(t.toString())) {
-      if (mbta.lines.get(t.toString()).containsValue(s1) && mbta.lines.get(t.toString()).containsValue(s2)) {
-        for (String station_name : mbta.train_position.keySet()) {
-          if (mbta.train_position.get(station_name) == s2) {
-            throw new RuntimeException();
-          }
-        }
-        mbta.train_position.replace(t.toString(), s2);
-      } else {
+    try {
+      if (!mbta.lines.containsKey(t.toString())) {
         throw new RuntimeException();
       }
-    } else {
-      throw new RuntimeException();
+
+      List<Station> stationList = mbta.lines.get(t.toString());
+
+      if (!stationList.contains(s1) || !stationList.contains(s2)) {
+        throw new RuntimeException();
+      }
+
+      int startIndex = stationList.indexOf(s1);
+      int endIndex = stationList.indexOf(s2);
+      int maxIndex = stationList.size() - 1; 
+
+      if (mbta.train_position.get(t.toString()) != stationList.get(startIndex)) {
+        throw new RuntimeException();
+      }
+
+      mbta.train_position.replace(t.toString(), null);
+
+      while (startIndex != endIndex) {
+        if (startIndex == maxIndex || startIndex == 0) {
+          t.changeDir();
+        }
+
+        if (t.isRight()) {
+          startIndex += 1;
+          for (String trainName : mbta.train_position.keySet()) {
+            if (mbta.train_position.get(trainName) == stationList.get(startIndex)) {
+              throw new RuntimeException();
+            }
+          }
+        } else {
+          startIndex -= 1;
+          for (String trainName : mbta.train_position.keySet()) {
+            if (mbta.train_position.get(trainName) == stationList.get(startIndex)) {
+              throw new RuntimeException();
+            }
+          }
+        }
+      }
+
+      mbta.train_position.replace(t.toString(), s2);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 }

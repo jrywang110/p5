@@ -22,10 +22,11 @@ public class DeboardEvent implements Event {
   }
   public void replayAndCheck(MBTA mbta) {
     if (mbta.lines.containsKey(t.toString())) {
-      if (mbta.lines.get(t.toString()).containsValue(s)) {
+      if (mbta.lines.get(t.toString()).contains(s)) {
         if (mbta.train_position.get(t.toString()) == s && t.containsPassenger(p)) {
-          if (mbta.journeys.get(t.toString())[p.get_index() + 1] == s) {
+          if (mbta.journeys.get(t.toString()).get(p.get_index() + 1) == s) {
             t.removePassenger(p);
+            p.updateJourney(mbta.journeys);
           } else {
             throw new RuntimeException();
           }
