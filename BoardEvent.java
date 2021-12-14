@@ -25,6 +25,7 @@ public class BoardEvent implements Event {
       if (mbta.lines.get(t.toString()).contains(s)) {
         if (mbta.train_position.get(t.toString()) == s && p.get_station() == s) {
           t.addPassenger(p);
+          p.onBoard();
         } else {
           throw new RuntimeException();
         }
