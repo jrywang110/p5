@@ -22,16 +22,16 @@ public class MoveEvent implements Event {
   }
   public void replayAndCheck(MBTA mbta) {
     try {
-      int collision = 0;
-      for (String trainName : mbta.train_position.keySet()) {
-          if (mbta.train_position.get(t.toString()) == mbta.train_position.get(trainName)) {
-            collision += 1;
-            if (collision >= 2) {
-              throw new RuntimeException();
-            }
-          }
-      }
-      
+      // int collision = 0;
+      // for (String trainName : mbta.train_position.keySet()) {
+      //     if (mbta.train_position.get(t.toString()) == mbta.train_position.get(trainName)) {
+      //       collision += 1;
+      //       if (collision >= 2) {
+      //         throw new RuntimeException();
+      //       }
+      //     }
+      // }
+
       if (!mbta.lines.containsKey(t.toString())) {
         throw new RuntimeException();
       }
