@@ -36,13 +36,16 @@ public class MoveEvent implements Event {
       int endIndex = stationList.indexOf(s2);
       int maxIndex = stationList.size() - 1; 
 
-      if (mbta.train_position.get(t.toString()) != stationList.get(startIndex)) {
+      if (abs(startIndex - endIndex) != 1) {
+        throw new RuntimeException();
+      }
+      if (mbta.train_position.get(t.toString()) != s1) {
         throw new RuntimeException();
       }
 
       mbta.train_position.replace(t.toString(), null);
       for (String trainName : mbta.train_position.keySet()) {
-        if (mbta.train_position.get(trainName) == stationList.get(startIndex)) {
+        if (mbta.train_position.get(trainName) == s1) {
           throw new RuntimeException();
         }
       }
