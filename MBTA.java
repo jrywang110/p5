@@ -64,6 +64,15 @@ public class MBTA {
     }
   }
 
+  public boolean simOver() {
+    for (String p : journeys.keySet()) {
+      if (Passenger.make(p).get_station() != journeys.get(p).get(journeys.get(p).size() - 1)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
   // reset to an empty simulation
   public void reset() {
     lines.clear();
