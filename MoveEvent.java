@@ -22,16 +22,6 @@ public class MoveEvent implements Event {
   }
   public void replayAndCheck(MBTA mbta) {
     try {
-      // int collision = 0;
-      // for (String trainName : mbta.train_position.keySet()) {
-      //     if (mbta.train_position.get(t.toString()) == mbta.train_position.get(trainName)) {
-      //       collision += 1;
-      //       if (collision >= 2) {
-      //         throw new RuntimeException();
-      //       }
-      //     }
-      // }
-
       if (!mbta.lines.containsKey(t.toString())) {
         throw new RuntimeException();
       }
@@ -51,6 +41,11 @@ public class MoveEvent implements Event {
       }
 
       mbta.train_position.replace(t.toString(), null);
+      for (String trainName : mbta.train_position.keySet()) {
+        if (mbta.train_position.get(trainName) == stationList.get(startIndex)) {
+          throw new RuntimeException();
+        }
+      }
 
       while (startIndex != endIndex) {
         if ((startIndex == maxIndex && t.isRight()) || (startIndex == 0 && !t.isRight())) {
