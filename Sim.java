@@ -22,29 +22,35 @@ public class Sim {
         public void run() {
           while (!mbta.simOver()) {
             try {
-              Lock currLock = stationLocks.get(currStation);
-              currLock.lock();
-              Thread.sleep(500);
+              synchronized (this) {
+                Lock currLock = stationLocks.get(currStation);
+                currLock.lock();
+                Thread.sleep(500);
 
-              if (((stationList.indexOf(currStation) == stationList.size() - 1) && t.isRight()) || (stationList.indexOf(currStation) == 0 && !t.isRight())) {
-                    t.changeDir();
+                if (((stationList.indexOf(currStation) == stationList.size() - 1) && t.isRight()) || (stationList.indexOf(currStation) == 0 && !t.isRight())) {
+                      t.changeDir();
+                }
+
+                if (t.isRight()) {
+                  if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1)).isLocked()) {
+                    Lock newLock = stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1));
+                    newLock.lock();
+                    currLock.unlock();
+                    Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+                    e.replayAndCheck(mbta);
+                    log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+                  }
+                } else {
+                  if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) - 1)).isLocked()) {
+                    Lock newLock = stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1));
+                    newLock.lock();
+                    currLock.unlock();
+                    Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+                    e.replayAndCheck(mbta);
+                    log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+                  }
+                } 
               }
-
-              if (t.isRight()) {
-                if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1)).isLocked()) {
-                  currLock.unlock();
-                  Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
-                  e.replayAndCheck(mbta);
-                  log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
-                }
-              } else {
-                if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) - 1)).isLocked()) {
-                  currLock.unlock();
-                  Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
-                  e.replayAndCheck(mbta);
-                  log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
-                }
-              } 
             } catch (InterruptedException e){}
           }
         }
@@ -70,6 +76,7 @@ public class Sim {
                         Event e = new DeboardEvent(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
                         e.replayAndCheck(mbta);
                         log.passenger_deboards(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
+                        boarded = false;
                       }
                     }
                   }
@@ -79,6 +86,7 @@ public class Sim {
                       Event e = new BoardEvent(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
                       e.replayAndCheck(mbta);
                       log.passenger_boards(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
+                      boarded = true;
                     }
                   }
                 }
