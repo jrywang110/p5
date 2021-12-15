@@ -100,7 +100,7 @@ public class Sim {
       };
       thr.start();
     }
-    while (!mbta.simOver());
+    
     // Map<Station, ReentrantLock> stationLocks = new HashMap<Station, ReentrantLock>();
     // for (List<Station> stationList : mbta.lines.values()) {
     //   for (Station s : stationList) {

@@ -1,1 +1,12 @@
 # Write down your multi-threading designs here!
+Hi!
+
+My first approach was to create a lock for each Station. If a train is at that Station, it uses that lock. 
+If a train wants to enter a station, it checks if the lock is occupied. If it is, it delays its entry until the lock is freed.
+
+However, after 10+ hours of testing and trying. I couldn't get it to work. See my 50+ submissions to gradescope to see. 
+
+So, I implemented the global lock instead. I understand this was not allowed in the spec, but I tried my best and now I'm just
+hoping for as much partial credit as possible. Thank you.
+
+Strangely enough, my outputs don't match the autograder (see campuswire post).
