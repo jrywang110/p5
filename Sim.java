@@ -15,14 +15,29 @@ public class Sim {
           t.changeDir();
     }
 
+    boolean occupied = false;
     if (t.isRight()) {
-        Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
-        e.replayAndCheck(mbta);
-        log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+        for (String trainName : mbta.train_position.keySet()) {
+            if (mbta.train_position.get(trainName) == stationList.get(stationList.indexOf(currStation) + 1)) {
+              occupied = true;
+            }
+        }
+        if (!occupied) {
+          Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+          e.replayAndCheck(mbta);
+          log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+        }
     } else {
-        Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
-        e.replayAndCheck(mbta);
-        log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+        for (String trainName : mbta.train_position.keySet()) {
+            if (mbta.train_position.get(trainName) == stationList.get(stationList.indexOf(currStation) - 1)) {
+              occupied = true;
+            }
+        }
+        if (!occupied) {
+          Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+          e.replayAndCheck(mbta);
+          log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+        }
     } 
   }
 
@@ -30,7 +45,7 @@ public class Sim {
     boolean boarded = p.isBoarded();
     if (boarded) {
       int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
-      int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
+      int maxJourneyIndex = mbta.journeys.get(p.toString()).size() - 1;
       for (String trainName : mbta.train_position.keySet()) {
         if (journeyIndex < maxJourneyIndex) {
           if (mbta.train_position.get(trainName) == mbta.journeys.get(p.toString()).get(journeyIndex + 1)) {
@@ -44,7 +59,7 @@ public class Sim {
     } else {
       for (String trainName : mbta.train_position.keySet()) {
         int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
-        int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
+        int maxJourneyIndex = mbta.journeys.get(p.toString()).size() - 1;
         if (mbta.train_position.get(trainName) == p.get_station() && (mbta.train_position.get(trainName) != mbta.journeys.get(p.toString()).get(maxJourneyIndex))) {
           Event e = new BoardEvent(p, Train.make(trainName), mbta.train_position.get(trainName));
           e.replayAndCheck(mbta);
@@ -150,7 +165,7 @@ public class Sim {
     //           synchronized (this) {
     //             if (boarded) {
     //               int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
-    //               int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
+    //               int maxJourneyIndex = mbta.journeys.get(p.toString()).size() - 1;
     //               for (String trainName : mbta.train_position.keySet()) {
     //                 if (journeyIndex < maxJourneyIndex) {
     //                   if (mbta.train_position.get(trainName) == mbta.journeys.get(p.toString()).get(journeyIndex + 1)) {

@@ -23,7 +23,7 @@ public class DeboardEvent implements Event {
   public void replayAndCheck(MBTA mbta) {
     if (mbta.lines.containsKey(t.toString())) {
       if (mbta.lines.get(t.toString()).contains(s)) {
-        if (mbta.train_position.get(t.toString()) == s && t.containsPassenger(p)) {
+        if (mbta.train_position.get(t.toString()) == s) {
           int nextIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station()) + 1;
           if (mbta.journeys.get(p.toString()).get(nextIndex) == s) {
             t.removePassenger(p);
