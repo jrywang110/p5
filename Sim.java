@@ -25,7 +25,6 @@ public class Sim {
               synchronized (this) {
                 Lock currLock = stationLocks.get(currStation);
                 currLock.lock();
-                sleep(500);
 
                 if (((stationList.indexOf(currStation) == stationList.size() - 1) && t.isRight()) || (stationList.indexOf(currStation) == 0 && !t.isRight())) {
                       t.changeDir();
