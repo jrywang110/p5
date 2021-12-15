@@ -18,11 +18,9 @@ public class Sim {
         private Train t = Train.make(trainName);
         private List<Station> stationList = mbta.lines.get(trainName);
         private Station currStation = mbta.train_position.get(trainName);
-        private boolean tf = true;
-        private int count = 0;
 
         public void run() {
-          while (tf) {
+          for (int i = 0; i < 10; i++) {
             try {
               synchronized (this) {
                 Lock currLock = stationLocks.get(currStation);
@@ -51,10 +49,6 @@ public class Sim {
                     log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
                   }
                 } 
-              }
-              count += 1;
-              if (count >= 10) {
-                tf = false;
               }
             } catch (Exception e){
               throw new RuntimeException(e);
