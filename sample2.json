@@ -1,9 +1,11 @@
 {
     "lines": {
       "red": [ "Davis", "Harvard", "Kendall", "Park", "Downtown Crossing",
-               "South Station", "Broadway", "Andrew", "JFK" ]
+               "South Station", "Broadway", "Andrew", "JFK" ],
+      "green": [ "Tufts", "East Sommerville", "Park" ]
     },
     "trips": {
+      "Bob": [ "Park", "Tufts" ],
       "Alice": [ "Davis", "Kendall" ]
     }
 }  

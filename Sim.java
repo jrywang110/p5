@@ -43,7 +43,9 @@ public class Sim {
       }
     } else {
       for (String trainName : mbta.train_position.keySet()) {
-        if (mbta.train_position.get(trainName) == p.get_station()) {
+        int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
+        int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
+        if (mbta.train_position.get(trainName) == p.get_station() && (mbta.train_position.get(trainName) != mbta.journeys.get(p.toString()).get(maxJourneyIndex))) {
           Event e = new BoardEvent(p, Train.make(trainName), mbta.train_position.get(trainName));
           e.replayAndCheck(mbta);
           log.passenger_boards(p, Train.make(trainName), mbta.train_position.get(trainName));
