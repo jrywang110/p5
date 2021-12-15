@@ -81,6 +81,7 @@ public class Sim {
           }
         }
       };
+      thr.start();
     }
     while (!mbta.simOver());
     // Map<Station, ReentrantLock> stationLocks = new HashMap<Station, ReentrantLock>();
