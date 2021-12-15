@@ -14,12 +14,12 @@ public class Sim {
     }
 
     for (String trainName : mbta.lines.keySet()) {
-      boolean tf = true;
-      int count = 0;
       Thread thr = new Thread() {
         private Train t = Train.make(trainName);
         private List<Station> stationList = mbta.lines.get(trainName);
         private Station currStation = mbta.train_position.get(trainName);
+        private boolean tf = true;
+        private int count = 0;
 
         public void run() {
           while (tf) {
