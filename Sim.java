@@ -50,7 +50,9 @@ public class Sim {
                   }
                 } 
               }
-            } catch (InterruptedException e){}
+            } catch (Exception e){
+              throw new RuntimeException(e);
+            }
           }
         }
       };
