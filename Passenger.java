@@ -7,7 +7,7 @@ public class Passenger extends Entity {
 
   private Station curr_station; 
   private int index = 0;
-  // private boolean boarded = false;
+  private boolean boarded = false;
 
   public static Passenger make(String name) {
     if (cache.containsKey(name)) {
@@ -35,15 +35,15 @@ public class Passenger extends Entity {
     index += 1;
   }
 
-  // public boolean isBoarded() {
-  //   return boarded;
-  // }
+  public boolean isBoarded() {
+    return boarded;
+  }
 
-  // public void onBoard() {
-  //   boarded = true;
-  // }
+  public void onBoard() {
+    boarded = true;
+  }
 
-  // public void deBoard() {
-  //   boarded = false;
-  // }
+  public void deBoard() {
+    boarded = false;
+  }
 }
