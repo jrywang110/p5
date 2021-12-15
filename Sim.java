@@ -4,57 +4,37 @@ import java.util.concurrent.locks.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Sim {
+  private static Lock lock = new ReentrantLock();
 
   public static void run_sim(MBTA mbta, Log log) {
-    Map<Station, ReentrantLock> stationLocks = new HashMap<Station, ReentrantLock>();
-    for (List<Station> stationList : mbta.lines.values()) {
-      for (Station s : stationList) {
-        stationLocks.put(s, new ReentrantLock());
-      }
-    }
-
     for (String trainName : mbta.lines.keySet()) {
+      Train t = Train.make(trainName);
       Thread thr = new Thread() {
-        private Train t = Train.make(trainName);
-        private List<Station> stationList = mbta.lines.get(trainName);
-        private Station currStation = mbta.train_position.get(trainName);
-
-        public void run() {
-          for (int i = 0; i < 10; i++) {
-            try {
-              synchronized (this) {
-                Lock currLock = stationLocks.get(currStation);
-                currLock.lock();
-
+            private Train t = Train.make(trainName);
+            private List<Station> stationList = mbta.lines.get(trainName);
+            private Station currStation = mbta.train_position.get(trainName);
+            public void run() {
+              while (!mbta.simOver()) {
+                try { sleep(500); }
+                catch (InterruptedException e){ }
+                lock.lock();
                 if (((stationList.indexOf(currStation) == stationList.size() - 1) && t.isRight()) || (stationList.indexOf(currStation) == 0 && !t.isRight())) {
                       t.changeDir();
                 }
 
                 if (t.isRight()) {
-                  if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1)).isLocked()) {
-                    Lock newLock = stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1));
-                    newLock.lock();
-                    currLock.unlock();
                     Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
                     e.replayAndCheck(mbta);
                     log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
-                  }
                 } else {
-                  if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) - 1)).isLocked()) {
-                    Lock newLock = stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1));
-                    newLock.lock();
-                    currLock.unlock();
                     Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
                     e.replayAndCheck(mbta);
                     log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
-                  }
                 } 
+                lock.unlock();
               }
-            } catch (Exception e){
-              throw new RuntimeException(e);
+              Thread.currentThread().interrupt();
             }
-          }
-        }
       };
       thr.start();
     }
@@ -66,8 +46,8 @@ public class Sim {
 
         public void run() {
           while (!mbta.simOver()) {
-            try { 
-              synchronized (this) {
+            lock.lock();
+            try {
                 if (boarded) {
                   int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
                   int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
@@ -91,15 +71,108 @@ public class Sim {
                     }
                   }
                 }
-              }
             } catch (Exception e) {
-              throw new RuntimeException(e);
-            }  
+              // throw RuntimeException(e);
+            }
+            lock.unlock();  
           }
         }
       };
-      thr.start();
     }
+    // Map<Station, ReentrantLock> stationLocks = new HashMap<Station, ReentrantLock>();
+    // for (List<Station> stationList : mbta.lines.values()) {
+    //   for (Station s : stationList) {
+    //     stationLocks.put(s, new ReentrantLock());
+    //   }
+    // }
+
+    // for (String trainName : mbta.lines.keySet()) {
+    //   Thread thr = new Thread() {
+    //     private Train t = Train.make(trainName);
+    //     private List<Station> stationList = mbta.lines.get(trainName);
+    //     private Station currStation = mbta.train_position.get(trainName);
+
+    //     public void run() {
+    //       for (int i = 0; i < 10; i++) {
+    //         try {
+    //           synchronized (this) {
+    //             Lock currLock = stationLocks.get(currStation);
+    //             currLock.lock();
+
+    //             if (((stationList.indexOf(currStation) == stationList.size() - 1) && t.isRight()) || (stationList.indexOf(currStation) == 0 && !t.isRight())) {
+    //                   t.changeDir();
+    //             }
+
+    //             if (t.isRight()) {
+    //               if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1)).isLocked()) {
+    //                 Lock newLock = stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1));
+    //                 newLock.lock();
+    //                 currLock.unlock();
+    //                 Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+    //                 e.replayAndCheck(mbta);
+    //                 log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
+    //               }
+    //             } else {
+    //               if (!stationLocks.get(stationList.get(stationList.indexOf(currStation) - 1)).isLocked()) {
+    //                 Lock newLock = stationLocks.get(stationList.get(stationList.indexOf(currStation) + 1));
+    //                 newLock.lock();
+    //                 currLock.unlock();
+    //                 Event e = new MoveEvent(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+    //                 e.replayAndCheck(mbta);
+    //                 log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) - 1));
+    //               }
+    //             } 
+    //           }
+    //         } catch (Exception e){
+    //           throw new RuntimeException(e);
+    //         }
+    //       }
+    //     }
+    //   };
+    //   thr.start();
+    // }
+
+    // for (String pName : mbta.journeys.keySet()) {
+    //   Thread thr = new Thread() {
+    //     private boolean boarded = false;
+    //     private Passenger p = Passenger.make(pName);
+
+    //     public void run() {
+    //       while (!mbta.simOver()) {
+    //         try { 
+    //           synchronized (this) {
+    //             if (boarded) {
+    //               int journeyIndex = mbta.journeys.get(p.toString()).indexOf(p.get_station());
+    //               int maxJourneyIndex = mbta.journeys.get(p.toString()).size();
+    //               for (String trainName : mbta.train_position.keySet()) {
+    //                 if (journeyIndex < maxJourneyIndex) {
+    //                   if (mbta.train_position.get(trainName) == mbta.journeys.get(p.toString()).get(journeyIndex + 1)) {
+    //                     Event e = new DeboardEvent(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
+    //                     e.replayAndCheck(mbta);
+    //                     log.passenger_deboards(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
+    //                     boarded = false;
+    //                   }
+    //                 }
+    //               }
+    //             } else {
+    //               for (String trainName : mbta.train_position.keySet()) {
+    //                 if (mbta.train_position.get(trainName) == Passenger.make(pName).get_station()) {
+    //                   Event e = new BoardEvent(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
+    //                   e.replayAndCheck(mbta);
+    //                   log.passenger_boards(Passenger.make(pName), Train.make(trainName), mbta.train_position.get(trainName));
+    //                   boarded = true;
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         } catch (Exception e) {
+    //           throw new RuntimeException(e);
+    //         }  
+    //       }
+    //     }
+    //   };
+    //   thr.start();
+    // }
   }
 
   public static void main(String[] args) throws Exception {
