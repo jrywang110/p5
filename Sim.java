@@ -20,13 +20,12 @@ public class Sim {
         private Station currStation = mbta.train_position.get(trainName);
 
         public void run() {
-          log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
           while (!mbta.simOver()) {
             try {
               synchronized (this) {
                 Lock currLock = stationLocks.get(currStation);
                 currLock.lock();
-                Thread.sleep(500);
+                // Thread.sleep(500);
 
                 if (((stationList.indexOf(currStation) == stationList.size() - 1) && t.isRight()) || (stationList.indexOf(currStation) == 0 && !t.isRight())) {
                       t.changeDir();
