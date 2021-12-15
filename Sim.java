@@ -20,6 +20,7 @@ public class Sim {
         private Station currStation = mbta.train_position.get(trainName);
 
         public void run() {
+          log.train_moves(t, currStation, stationList.get(stationList.indexOf(currStation) + 1));
           while (!mbta.simOver()) {
             try {
               synchronized (this) {
